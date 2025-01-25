@@ -18,10 +18,14 @@ pipeline {
                         docker-compose --version || { echo "Docker Compose is not installed."; exit 1; }
                     '''
 
-                    // Stop and remove old containers, then rebuild and deploy
+                    // Stop and remove old containers, remove volumes, and orphan containers
                     sh '''
-                        docker-compose down --rmi all -v
-                        docker-compose up --build -d
+                        docker-compose down --volumes --remove-orphans
+                    '''
+
+                    // Rebuild and deploy containers with no cache and force recreate
+                    sh '''
+                        docker-compose up --build -d --no-cache --force-recreate
                     '''
                 }
             }
