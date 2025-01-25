@@ -20,7 +20,7 @@ pipeline {
 
                     // Stop and remove old containers, then rebuild and deploy
                     sh '''
-                        docker-compose down --rmi all
+                        docker-compose down --rmi all -v
                         docker-compose up --build -d
                     '''
                 }
