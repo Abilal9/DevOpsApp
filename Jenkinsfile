@@ -25,7 +25,7 @@ pipeline {
 
                     // Rebuild and deploy containers with no cache and force recreate
                     sh '''
-                        docker-compose up --build --no-cache -d --force-recreate
+                        docker-compose down --rmi all --remove-orphans && docker-compose up --force-recreate
                     '''
                 }
             }
