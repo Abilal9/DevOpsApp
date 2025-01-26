@@ -19,12 +19,12 @@ pipeline {
 
                     echo 'Stopping and cleaning up existing containers and volumes...'
                     sh '''
-                        COMPOSE_PROJECT_NAME=DevOpsApp_Stack docker-compose down --rmi all --volumes --remove-orphans || { echo "Failed to clean up Docker environment."; exit 1; }
+                        COMPOSE_PROJECT_NAME=devopsapp_stack docker-compose down --rmi all --volumes --remove-orphans || { echo "Failed to clean up Docker environment."; exit 1; }
                     '''
 
                     echo 'Rebuilding and starting containers...'
                     sh '''
-                        COMPOSE_PROJECT_NAME=DevOpsApp_Stack docker-compose up --build -d || { echo "Failed to build and start Docker containers."; exit 1; }
+                        COMPOSE_PROJECT_NAME=devopsapp_stack docker-compose up --build -d || { echo "Failed to build and start Docker containers."; exit 1; }
                     '''
                 }
             }
