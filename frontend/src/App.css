@@ -41,19 +41,19 @@
   background-color: #61dafb;
   color: white;
   border: none;
-  border-radius: 50px; /* Makes the button roundish */
-  padding: 15px 30px; /* Increases the size of the button */
-  font-size: 18px; /* Increases font size */
+  border-radius: 50px;
+  padding: 15px 30px;
+  font-size: 18px;
   cursor: pointer;
   margin: 10px;
   transition: all 0.3s ease;
 }
 
 .round-button:hover {
-  background-color: #21a1f1; /* Changes color on hover */
-  transform: scale(1.1); /* Slightly enlarges on hover */
+  background-color: #21a1f1; 
+  transform: scale(1.1); 
 }
 
 .round-button:active {
-  transform: scale(1.05); /* Slightly smaller on click */
+  transform: scale(1.05);
 }

@@ -17,7 +17,7 @@ pipeline {
                         docker-compose --version || { echo "Docker Compose is not installed. Please install Docker Compose."; exit 1; }
                     '''
 
-                    echo 'Stopping and cleaning up existing containers and volumes...'
+                    echo 'Stopping and cleaning up existing containers...'
                     sh '''
                         COMPOSE_PROJECT_NAME=devopsapp_stack docker-compose down --remove-orphans || { echo "Failed to clean up Docker environment."; exit 1; }
                     '''
