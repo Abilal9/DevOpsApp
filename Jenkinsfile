@@ -1,6 +1,11 @@
 pipeline {
     agent any
 
+    environment {
+        DOCKER_USERNAME = credentials('ahmadb9')  
+        DOCKER_PASSWORD = credentials('Ahmodedodi123-')  
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -8,23 +13,39 @@ pipeline {
             }
         }
 
-        stage('Build and Deploy') {
+        stage('Docker Login') {
             steps {
                 script {
-                    echo 'Checking Docker and Docker Compose versions...'
-                    sh '''
-                        docker --version || { echo "Docker is not installed. Please install Docker."; exit 1; }
-                        docker-compose --version || { echo "Docker Compose is not installed. Please install Docker Compose."; exit 1; }
-                    '''
+                    sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
+                }
+            }
+        }
 
-                    echo 'Stopping and cleaning up existing containers...'
+        stage('Build and Push Images') {
+            steps {
+                script {
                     sh '''
-                        COMPOSE_PROJECT_NAME=devopsapp_stack docker-compose down --remove-orphans || { echo "Failed to clean up Docker environment."; exit 1; }
-                    '''
+                        docker build -t ahmadb9/my-backend-image:latest ./backend
+                        docker push ahmadb9/my-backend-image:latest
 
-                    echo 'Rebuilding and starting containers...'
+                        docker build -t ahmadb9/my-frontend-image:latest ./frontend
+                        docker push ahmadb9/my-frontend-image:latest
+                    '''
+                }
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                script {
                     sh '''
-                        COMPOSE_PROJECT_NAME=devopsapp_stack docker-compose up --build -d || { echo "Failed to build and start Docker containers."; exit 1; }
+                        kubectl apply -f k8s/backend-deployment.yaml
+                        kubectl apply -f k8s/backend-service.yaml
+                        kubectl apply -f k8s/frontend-deployment.yaml
+                        kubectl apply -f k8s/frontend-service.yaml
+                        kubectl apply -f k8s/mysql-deployment.yaml
+                        kubectl apply -f k8s/mysql-service.yaml
+                        kubectl apply -f k8s/mysql-pvc.yaml
                     '''
                 }
             }
@@ -32,14 +53,11 @@ pipeline {
     }
 
     post {
-        always {
-            echo 'Pipeline execution completed.'
-        }
         success {
-            echo 'Build and deployment successful.'
+            echo '✅ Application successfully deployed on Kubernetes!'
         }
         failure {
-            echo 'Pipeline failed. Check the logs for details.'
+            echo '❌ Deployment failed. Check logs.'
         }
     }
 }

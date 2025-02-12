@@ -66,7 +66,7 @@ function App() {
           Increment Number
         </button>
         <button className="round-button" onClick={handleReset}>
-          Reset-1
+          Reset
         </button>
       </header>
     </div>

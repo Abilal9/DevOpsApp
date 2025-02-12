@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: ahmadb9/my-backend-image:latest
+          ports:
+            - containerPort: 8000
+          env:
+            - name: DB_HOST
+              value: "db-service"
+            - name: DB_NAME
+              value: "simpleapp_db"
+            - name: DB_USER
+              value: "test"
+            - name: DB_PASSWORD
+              value: "test123"
