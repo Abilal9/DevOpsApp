@@ -69,7 +69,7 @@ DATABASES = {
         'NAME': 'simpleapp_db',  
         'USER': 'test',          
         'PASSWORD': 'test123',  
-        'HOST': 'db',     
+        'HOST': 'db-service',     
         'PORT': '3306',          
     }
 }
