@@ -16,4 +16,4 @@ spec:
         - name: frontend
           image: ahmadb9/my-frontend-image:latest
           ports:
-            - containerPort: 80
+            - containerPort: 3000
