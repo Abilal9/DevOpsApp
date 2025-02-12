@@ -70,11 +70,13 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        echo "Port-forwarding backend service..."
+                        echo "🔄 Port-forwarding backend service..."
                         nohup kubectl port-forward service/backend-service 8000:8000 > backend.log 2>&1 &
 
-                        echo "Getting frontend service URL..."
-                        FRONTEND_URL=$(minikube service frontend-service --url)
+                        echo "🌍 Getting frontend service URL..."
+                        nohup minikube service frontend-service --url > frontend-url.txt 2>&1 &
+                        sleep 5
+                        FRONTEND_URL=$(cat frontend-url.txt | tail -1)
                         echo "✅ Access the frontend at: $FRONTEND_URL"
                     '''
                 }
