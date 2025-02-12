@@ -80,7 +80,7 @@ pipeline {
             steps {
                 script {
                     echo "🔄 Port-forwarding backend service..."
-                    nohup kubectl port-forward service/backend-service 8000:8000 > backend.log 2>&1 &
+                    sh 'kubectl port-forward service/backend-service 8000:8000 &'
                 }
             }
         }
@@ -89,7 +89,7 @@ pipeline {
             steps {
                 script {
                     echo '🔄 Port-forwarding frontend service...'
-                    sh 'nohup kubectl port-forward service/frontend-service 30000:80 &'
+                    sh 'kubectl port-forward service/frontend-service 30000:80 &'
                 }
             }
         }
@@ -98,7 +98,7 @@ pipeline {
             steps {
                 script {
                     echo '🔄 Port-forwarding MySQL service...'
-                    sh 'nohup kubectl port-forward service/db-service 3306:3306 &'
+                    sh 'kubectl port-forward service/db-service 3306:3306 &'
                 }
             }
         }
