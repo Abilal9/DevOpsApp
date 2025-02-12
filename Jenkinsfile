@@ -49,11 +49,42 @@ pipeline {
                 }
             }
         }
+
+        stage('Wait for Services to Start') {
+            steps {
+                script {
+                    sh '''
+                        echo "⏳ Waiting for MySQL to be ready..."
+                        kubectl wait --for=condition=ready pod -l app=mysql --timeout=120s
+
+                        echo "⏳ Waiting for Backend to be ready..."
+                        kubectl wait --for=condition=ready pod -l app=backend --timeout=120s
+
+                        echo "✅ MySQL and Backend are ready!"
+                    '''
+                }
+            }
+        }
+
+        stage('Expose Services Locally') {
+            steps {
+                script {
+                    sh '''
+                        echo "Port-forwarding backend service..."
+                        nohup kubectl port-forward service/backend-service 8000:8000 > backend.log 2>&1 &
+
+                        echo "Getting frontend service URL..."
+                        FRONTEND_URL=$(minikube service frontend-service --url)
+                        echo "✅ Access the frontend at: $FRONTEND_URL"
+                    '''
+                }
+            }
+        }
     }
 
     post {
         success {
-            echo '✅ Application successfully deployed on Kubernetes!'
+            echo '✅ Application successfully deployed and is accessible locally!'
         }
         failure {
             echo '❌ Deployment failed. Check logs.'
