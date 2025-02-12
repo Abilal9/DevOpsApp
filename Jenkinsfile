@@ -45,6 +45,18 @@ pipeline {
             }
         }
 
+        stage('Delete Existing Pods and Services') {
+            steps {
+                script {
+                    echo '🧹 Deleting existing Kubernetes pods and services...'
+                    sh '''
+                        kubectl delete pods --all
+                        kubectl delete svc --all
+                    '''
+                }
+            }
+        }
+
         stage('Deploy to Kubernetes') {
             steps {
                 script {
