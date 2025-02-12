@@ -89,7 +89,7 @@ pipeline {
             steps {
                 script {
                     echo '🔄 Port-forwarding frontend service...'
-                    sh 'kubectl port-forward service/frontend-service 30000:80 &'
+                    sh 'kubectl port-forward service/frontend-service 80:80 &'
                 }
             }
         }
