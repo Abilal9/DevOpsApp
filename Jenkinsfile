@@ -16,7 +16,7 @@ pipeline {
             steps {
                 script {
                     echo '🔨 Building backend image...'
-                    sh 'docker build -t ahmadb9/my-backend-image:latest ./backend'
+                    sh 'docker build --no-cache -t ahmadb9/my-backend-image:latest ./backend'
 
                     echo '🔨 Building frontend image...'
                     sh 'docker build -t ahmadb9/my-frontend-image:latest ./frontend'
