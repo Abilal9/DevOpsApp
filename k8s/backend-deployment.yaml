@@ -16,7 +16,7 @@ spec:
         - name: backend
           image: ahmadb9/my-backend-image:latest
           ports:
-            - containerPort: 8000
+            - containerPort: 8000 
           env:
             - name: DB_HOST
               value: "db-service"
