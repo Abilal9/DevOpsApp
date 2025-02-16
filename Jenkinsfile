@@ -101,7 +101,7 @@ pipeline {
             steps {
                 script {
                     echo '🔄 Port-forwarding frontend service...'
-                    sh 'nohup kubectl port-forward service/frontend-service 80:80 &'
+                    sh 'nohup kubectl port-forward service/frontend-service 3000:80 &'
                 }
             }
         }
