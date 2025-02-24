@@ -15,9 +15,11 @@ pipeline {
         stage('Detect Changes') {
             steps {
                 script {
-                    def changedFiles = sh(script: 'git diff --name-only origin/main HEAD', returnStdout: true).trim().split('\n')
+                    def changedFiles = sh(script: 'git diff --name-only $(git merge-base HEAD origin/main) HEAD', returnStdout: true).trim().split('\n')
+                    echo "Changed files: ${changedFiles}"
                     env.FRONTEND_CHANGED = changedFiles.any { it.startsWith('frontend/') } ? 'true' : 'false'
                     env.BACKEND_CHANGED = changedFiles.any { it.startsWith('backend/') } ? 'true' : 'false'
+                    echo "Frontend changed: ${env.FRONTEND_CHANGED}, Backend changed: ${env.BACKEND_CHANGED}"
                 }
             }
         }
@@ -52,7 +54,7 @@ pipeline {
             steps {
                 script {
                     echo 'Building frontend image...'
-                    sh 'docker build -t ahmadb9/my-frontend-image:latest ./frontend'
+                    sh 'docker build --no-cache -t ahmadb9/my-frontend-image:latest ./frontend'
                     echo 'Pushing frontend image...'
                     sh 'docker push ahmadb9/my-frontend-image:latest'
                 }
