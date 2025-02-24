@@ -15,7 +15,7 @@ pipeline {
         stage('Detect Changes') {
             steps {
                 script {
-                    def changedFiles = sh(script: 'git diff --name-only $(git merge-base HEAD origin/main) HEAD', returnStdout: true).trim().split('\n')
+                    def changedFiles = sh(script: 'git diff --name-only HEAD~1 HEAD', returnStdout: true).trim().split('\n')
                     echo "Changed files: ${changedFiles}"
                     env.FRONTEND_CHANGED = changedFiles.any { it.startsWith('frontend/') } ? 'true' : 'false'
                     env.BACKEND_CHANGED = changedFiles.any { it.startsWith('backend/') } ? 'true' : 'false'
