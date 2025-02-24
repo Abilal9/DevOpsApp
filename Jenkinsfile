@@ -15,16 +15,25 @@ pipeline {
         stage('Detect Changes') {
             steps {
                 script {
-                    def changedFiles = sh(script: 'git diff --name-only HEAD~1 HEAD', returnStdout: true).trim().split('\n')
-                    env.FRONTEND_CHANGED = changedFiles.any { it.startsWith('frontend/') }
-                    env.BACKEND_CHANGED = changedFiles.any { it.startsWith('backend/') }
+                    def changedFiles = sh(script: 'git diff --name-only origin/main HEAD', returnStdout: true).trim().split('\n')
+                    env.FRONTEND_CHANGED = changedFiles.any { it.startsWith('frontend/') } ? 'true' : 'false'
+                    env.BACKEND_CHANGED = changedFiles.any { it.startsWith('backend/') } ? 'true' : 'false'
+                }
+            }
+        }
+
+        stage('Docker Login') {
+            steps {
+                script {
+                    echo 'Logging into Docker Hub...'
+                    sh "echo ${DOCKER_CREDENTIALS_PSW} | docker login -u ${DOCKER_CREDENTIALS_USR} --password-stdin"
                 }
             }
         }
 
         stage('Build and Push Backend Image') {
             when {
-                expression { env.BACKEND_CHANGED == 'true' }
+                expression { env.BACKEND_CHANGED.toBoolean() }
             }
             steps {
                 script {
@@ -38,7 +47,7 @@ pipeline {
 
         stage('Build and Push Frontend Image') {
             when {
-                expression { env.FRONTEND_CHANGED == 'true' }
+                expression { env.FRONTEND_CHANGED.toBoolean() }
             }
             steps {
                 script {
@@ -50,26 +59,39 @@ pipeline {
             }
         }
 
+        stage('Set Kubernetes Context') {
+            steps {
+                script {
+                    echo 'Ensuring correct Kubernetes context...'
+                    sh 'kubectl config use-context my-k8s-context'
+                }
+            }
+        }
+
         stage('Deploy Backend to Kubernetes') {
             when {
-                expression { env.BACKEND_CHANGED == 'true' }
+                expression { env.BACKEND_CHANGED.toBoolean() }
             }
             steps {
                 script {
                     echo 'Deploying backend to Kubernetes...'
                     sh 'kubectl apply -f k8s/backend-deployment.yaml'
+                    echo 'Restarting backend deployment...'
+                    sh 'kubectl rollout restart deployment backend'
                 }
             }
         }
 
         stage('Deploy Frontend to Kubernetes') {
             when {
-                expression { env.FRONTEND_CHANGED == 'true' }
+                expression { env.FRONTEND_CHANGED.toBoolean() }
             }
             steps {
                 script {
                     echo 'Deploying frontend to Kubernetes...'
                     sh 'kubectl apply -f k8s/frontend-deployment.yaml'
+                    echo 'Restarting frontend deployment...'
+                    sh 'kubectl rollout restart deployment frontend'
                 }
             }
         }

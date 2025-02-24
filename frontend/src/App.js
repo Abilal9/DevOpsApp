@@ -5,28 +5,28 @@ import './App.css';
 function App() {
   const [number, setNumber] = useState(0);
 
-  const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://myapp.local/api';
+  const API_BASE_URL = 'http://myapp.local/api';
 
   const fetchNumber = async () => {
     try {
-      const response = await axios.get('${API_BASE_URL}/increment/get/');
+      const response = await axios.get(`${API_BASE_URL}/increment/get/`);
       if (response.data && response.data.current_number !== undefined) {
-        setNumber(response.data.current_number);  
+        setNumber(response.data.current_number);
       } else {
         console.log('Unexpected response format');
       }
     } catch (error) {
-      console.log('Error fetching number');
+      console.log('Error fetching number:', error);
     }
   };
 
   const handleIncrement = async () => {
     try {
-      const response = await axios.post('${API_BASE_URL}/increment/');
+      const response = await axios.post(`${API_BASE_URL}/increment/`);
       if (response.data && response.data.success !== undefined) {
         if (response.data.success) {
           console.log('Increment successful');
-          fetchNumber();  
+          fetchNumber();
         } else {
           console.log('Increment failed');
         }
@@ -34,17 +34,17 @@ function App() {
         console.log('Unexpected response format');
       }
     } catch (error) {
-      console.log('Error incrementing number');
+      console.log('Error incrementing number:', error);
     }
   };
 
   const handleReset = async () => {
     try {
-      const response = await axios.post('${API_BASE_URL}/reset/');
+      const response = await axios.post(`${API_BASE_URL}/reset/`);
       if (response.data && response.data.success !== undefined) {
         if (response.data.success) {
           console.log('Reset successful');
-          fetchNumber();  
+          fetchNumber();
         } else {
           console.log('Reset failed');
         }
@@ -52,7 +52,7 @@ function App() {
         console.log('Unexpected response format');
       }
     } catch (error) {
-      console.log('Error resetting number');
+      console.log('Error resetting number:', error);
     }
   };
 
@@ -68,7 +68,7 @@ function App() {
           Increment Number
         </button>
         <button className="round-button" onClick={handleReset}>
-          Reset
+          Reset-v1
         </button>
       </header>
     </div>
