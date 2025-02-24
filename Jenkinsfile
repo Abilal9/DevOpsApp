@@ -59,15 +59,6 @@ pipeline {
             }
         }
 
-        stage('Set Kubernetes Context') {
-            steps {
-                script {
-                    echo 'Ensuring correct Kubernetes context...'
-                    sh 'kubectl config use-context my-k8s-context'
-                }
-            }
-        }
-
         stage('Deploy Backend to Kubernetes') {
             when {
                 expression { env.BACKEND_CHANGED.toBoolean() }
