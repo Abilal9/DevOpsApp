@@ -6,7 +6,12 @@ SECRET_KEY = 'django-insecure-@g1b11%0@^bcp0b5c@0cv%ua0rx#0g7t!)txf$(!o==^juyfe#
 
 DEBUG = True
 
-ALLOWED_HOSTS = ["0.0.0.0", "backend-service", "localhost", "*"]
+ALLOWED_HOSTS = [
+    "localhost", 
+    "127.0.0.1", 
+    "backend-service",  
+    "myapp.local"
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -33,11 +38,10 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "http://frontend-service",]
+    "http://frontend-service",
+    "http://myapp.local"
+]
 
-CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:3000",
-    "http://frontend-service",]
 
 ROOT_URLCONF = 'SimpleApp.urls'
 

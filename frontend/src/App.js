@@ -5,9 +5,11 @@ import './App.css';
 function App() {
   const [number, setNumber] = useState(0);
 
+  const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://myapp.local/api';
+
   const fetchNumber = async () => {
     try {
-      const response = await axios.get('http://0.0.0.0:8000/increment/get/');
+      const response = await axios.get('${API_BASE_URL}/increment/get/');
       if (response.data && response.data.current_number !== undefined) {
         setNumber(response.data.current_number);  
       } else {
@@ -20,7 +22,7 @@ function App() {
 
   const handleIncrement = async () => {
     try {
-      const response = await axios.post('http://0.0.0.0:8000/increment/');
+      const response = await axios.post('${API_BASE_URL}/increment/');
       if (response.data && response.data.success !== undefined) {
         if (response.data.success) {
           console.log('Increment successful');
@@ -38,7 +40,7 @@ function App() {
 
   const handleReset = async () => {
     try {
-      const response = await axios.post('http://0.0.0.0:8000/reset/');
+      const response = await axios.post('${API_BASE_URL}/reset/');
       if (response.data && response.data.success !== undefined) {
         if (response.data.success) {
           console.log('Reset successful');
